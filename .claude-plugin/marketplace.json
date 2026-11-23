@@ -1,0 +1,8 @@
+{
+  "name": "zaubar-skills",
+  "owner": {"name": "Zaubar"},
+  "metadata": {"description": "Zaubar's shared Claude skills, one source for Claude Code and claude.ai."},
+  "plugins": [
+    {"name": "lead", "source": "./plugins/lead", "description": "Lead several tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, review, gate, merge, ledger."}
+  ]
+}
