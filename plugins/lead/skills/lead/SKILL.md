@@ -34,6 +34,11 @@ References (read when the step needs them):
   `branch -D` of unmerged work) in a checkout another session uses.
 - Verify, do not trust: a worker's report is a claim until you have read the diff and seen the gate.
 - Do not wait without a reason, do not poll. The platform wakes you when a worker ends a turn.
+- Autonomous mode (the user said "work autonomously", "do not ask", or the profile or memory says so): ask the user
+  nothing, not even yes or no buttons at the end of a turn. Decide cleanup (duplicates, worktrees, disk), capacity,
+  machines, merges, fixes and re-plans yourself, do them, and report each in one line. What needs the user's own
+  hands or accounts (a device, signing, a paid key, a real third party) is parked in the ledger and listed once,
+  never asked.
 - Decide the mechanics yourself: opening and removing worktrees, how many workers run and on which machine, splitting
   a task into sub-tasks or subagents, re-planning after a red gate. Ask the user only for what section 2 calls a user
   decision (direction, product, money, accounts, someone else's machine) and for permissions the repo does not grant.
