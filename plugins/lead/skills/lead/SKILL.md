@@ -157,14 +157,20 @@ When a worker reports, follow `references/review-merge.md`. In short:
 1. Read the diff, not only the report: scope kept, tests added, docs changed with the code, no secrets, no
    guessed API names, the repo's own scanners clean. For a large or risky diff, ask a fresh subagent to review the
    code without your conclusion.
-2. Run the gate the profile names (local check, CI on the pushed branch, or both). Check a CI gate once when the
+2. CI is a shared, scarce resource (hosted runners have a concurrency limit for the whole account): one full CI run
+   per wave, on the integration branch, not one per worker. Workers prove their branch locally (the repo's precheck or
+   check); pushing a worker branch is for handing it over, and must not start a full run (configure CI to run on
+   push only for the default and integration branches, or push with the CI skipped). Before starting a gate, list the
+   queued and running runs (`gh run list`) and cancel every run a newer commit or an integration branch supersedes;
+   never leave runs of abandoned or merged branches queued. When the queue is long, say why in one line and shrink it.
+3. Run the gate the profile names (local check, CI on the pushed branch, or both). Check a CI gate once when the
    slowest job can have finished, in the background; never many `--wait` watches at once (shared API budget).
-3. A gap goes back to the same worker (message its session id), never to a new session. Two failed rounds on one
+4. A gap goes back to the same worker (message its session id), never to a new session. Two failed rounds on one
    point: re-plan it (split, reassign, or take it over yourself).
-4. Merge only with permission and only into a clean main checkout (no staged changes, no `MERGE_HEAD`). A conflict:
+5. Merge only with permission and only into a clean main checkout (no staged changes, no `MERGE_HEAD`). A conflict:
    abort at once, have the worker merge the default branch into its branch, resolve, test, push, gate again. Never
    resolve conflicts in a shared checkout.
-5. After the merge: push if allowed, delete the branch, remove the worktree, archive the worker's session (subagent
+6. After the merge: push if allowed, delete the branch, remove the worktree, archive the worker's session (subagent
    workers: remove their `agent-*` worktree), record refuted ideas in the repo's learnings file, update the ledger,
    start any task this merge unblocked. Nothing closes by itself: a session stays open until its branch is merged,
    since fix rounds go back to it, and is archived right after the merge, without asking.
@@ -193,6 +199,7 @@ decisions, lessons, and a restart prompt a fresh lead can paste.
 | Two workers need the same file mid-wave | the later one stops at a commit, waits for the earlier merge, merges it in |
 | Disk below the profile's floor, or too little for the next workers | free space as section 0 says (idle build output, merged or fully pushed clean worktrees, caches), then start the workers; never sources, uncommitted or unpushed work |
 | API quota low | stop watchers, check gates once, space them out |
+| CI queue long, runs waiting for runners | cancel superseded runs and every run of a worker branch; one run per integration branch; workers use the local precheck |
 | Main checkout dirty or mid-merge by someone else | wait and retry; never commit, abort or reset their state |
 | User decision blocks a task | park the task in the ledger, keep the rest moving, ask in one short question |
 

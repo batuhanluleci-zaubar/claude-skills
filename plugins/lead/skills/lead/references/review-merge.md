@@ -26,7 +26,9 @@ review: a fresh subagent given the diff and the brief, not your opinion of it (o
 ## The gate
 
 - Use the profile's gate: a local check command, CI on the pushed branch, or both, in that order.
-- CI needs the branch on the remote: push the branch (if allowed) or ask the worker to.
+- CI needs the branch on the remote. Gate the integration branch, not each worker branch: one run covers the wave.
+  Pushing worker branches for handover must not start runs (CI on push only for the default and integration
+  branches); cancel superseded runs before each gate (`gh run list`, `gh run cancel`).
 - In zsh, quote refspecs built from variables: `git push origin "${b}:refs/heads/${b}"` (a bare `$b:r` is zsh's root
   modifier and silently mangles the refspec); check with `git ls-remote --heads origin` afterwards.
 - Fail-fast watch when the repo has one (the profile's gate line, e.g. `ci gate SHA --watch`): start it once, in the
