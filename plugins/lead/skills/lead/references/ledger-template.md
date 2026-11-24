@@ -7,10 +7,10 @@
 
 Updated: <YYYY-MM-DD HH:MM>, lead: <session id or name>, lead branch: <branch>.
 
-| # | Task | Wave | Unit | Worker | Branch | Worktree | Status | Gate | Merge | Next action |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| A | REST client | 1 | session | local_ab12 | feature/rest | ../wt/rest | gated | CI 1234 green | | merge after B's review |
-| B | Auth | 2 | session | | feature/auth | | planned | | | starts from A's branch once A is reviewed |
+| # | Task | Wave | Unit | Model | Machine | Worker | Branch | Worktree | Status | Gate | Merge | Next action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| A | REST client | 1 | session | strong | this Mac | local_ab12 | feature/rest | ../wt/rest | gated | CI 1234 green | | merge after B's review |
+| B | Auth | 2 | session | cheap | builder | | feature/auth | | planned | | | starts from A's branch once A is reviewed |
 
 Statuses: planned, running, reported, changes requested, gated, merged, dropped, parked (user decision).
 

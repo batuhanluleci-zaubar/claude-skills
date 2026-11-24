@@ -41,9 +41,10 @@ background command, so a worker that backgrounds its build and ends its turn sta
 Commit small, conventional commits, each ending with "<attribution line>". <Push rule: "Do not push" or "Push your
 branch only">. Never merge into <default branch>; the lead does that after review and the gate.
 
-Final report, in this order: what was built; acceptance criteria one by one (met, not met, simulated); test and
-check results with their output tail; numbers with their headers; `git log --oneline <default>..HEAD`; open
-questions; refuted ideas with their numbers.
+Work quietly: no narration, no recaps, do not re-read files you already read, run independent commands in one
+message. Final report, at most 15 lines, in this order: branch and last commit; acceptance criteria one per line
+(met, not met, simulated); check result (one line, plus the failing tail only if red); numbers with their headers;
+open questions; refuted ideas with their numbers. Nothing else: the lead reads the diff itself.
 
 Stop and ask only for decisions that are the user's (scope, dependency, licence, account, paid usage, direction).
 Decide everything else, and write the reason in the commit message.
@@ -83,3 +84,4 @@ Builds on: <"main" or "merge <dep branch> first">.
 - Size: a block a worker can finish in one session (a few hours of agent time). Bigger: split by layer or by
   vertical slice, and make the second slice depend on the first.
 - Never paste secrets, tokens or personal data into a brief; point to where the worker reads them locally.
+- Short blocks: point to files and doc sections, never paste them; the preface is written once per batch.

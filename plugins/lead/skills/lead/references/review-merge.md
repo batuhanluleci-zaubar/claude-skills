@@ -6,8 +6,11 @@
 git fetch --all --prune
 git log --oneline <default>..<branch>
 git diff --stat <default>...<branch>
-git diff <default>...<branch>
+git diff <default>...<branch> -- <paths that carry risk>
 ```
+
+Read the stat first, then only the hunks that carry risk (logic, security, data, concurrency, public API); skip
+generated files and pure moves.
 
 - Scope: only the brief's paths, or a stated reason. Unrelated refactors go back.
 - Acceptance criteria: each one shown by a test, a command output or a capture, not by prose.
@@ -42,6 +45,8 @@ review: a fresh subagent given the diff and the brief, not your opinion of it (o
   usual time.
 - Watch budgets: many parallel `--wait` watchers on a hosted CI can empty an account's API quota for everyone. One
   watcher per commit, polling every few minutes; `gh api rate_limit` shows what is left.
+- Before a gate, list queued and running runs (`gh run list`) and cancel every run a newer commit or an integration
+  branch supersedes; never leave runs of abandoned or merged branches queued. A long queue: say why in one line.
 - Flaky: one rerun. Red twice is real.
 - Infrastructure failure (runner, cache, quota, expired token): not the worker's fault; fix or report it.
 
