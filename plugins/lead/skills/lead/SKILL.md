@@ -39,6 +39,12 @@ References (read when the step needs them):
   decision (direction, product, money, accounts, someone else's machine) and for permissions the repo does not grant.
 - When the user hands over a whole plan, start every task it can start now across all machines in the same turn;
   never run it slower than the capacity allows just to keep the session simple.
+- Disk and worktrees are the lead's job, without asking: before a wave and whenever a machine runs short, measure
+  (`df -h`, each worktree's `build/` size, `git status --porcelain`, `git rev-list --count origin/<branch>..HEAD`),
+  then free space in this order: build output of finished, pushed and idle workers; worktrees whose branch is merged or
+  fully pushed with a clean tree (`git worktree remove`, then `git worktree prune`); regenerable `out/` and caches the
+  profile names. Then open the worktrees the plan needs. Never delete sources, uncommitted changes, unpushed commits,
+  the main checkout's state, or anything another session is still writing; when in doubt about a worktree, keep it.
 
 ## 1. Set up (once per repo, once per batch)
 
@@ -160,7 +166,7 @@ decisions, lessons, and a restart prompt a fresh lead can paste.
 | Gate red on a flaky test | rerun once; red again is real, back to the worker with the log |
 | Gate red on infrastructure (runner, quota, cache) | fix or report the infrastructure; do not blame the worker |
 | Two workers need the same file mid-wave | the later one stops at a commit, waits for the earlier merge, merges it in |
-| Disk below the profile's floor | delete regenerable build output and merged worktrees; never sources or active work |
+| Disk below the profile's floor, or too little for the next workers | free space as section 0 says (idle build output, merged or fully pushed clean worktrees, caches), then start the workers; never sources, uncommitted or unpushed work |
 | API quota low | stop watchers, check gates once, space them out |
 | Main checkout dirty or mid-merge by someone else | wait and retry; never commit, abort or reset their state |
 | User decision blocks a task | park the task in the ledger, keep the rest moving, ask in one short question |

@@ -63,6 +63,8 @@ is ready to merge. Never open a PR unless the repo's rules or the user allow it.
 
 - Merged worktrees and branches: remove them after each merge, not at the end.
 - Build output in removed worktrees: gone with the worktree; check `df -h` after a wave.
+- Finished but unmerged workers (reported, pushed, idle): delete their `build/` to make room and keep the worktree for
+  review fixes; a fix round rebuilds it.
 - Workers' sessions: archive each one right after its branch is merged, without asking (unless the repo's rules
   say otherwise). Keep it open until then: review fixes and CI failures go back to it. A session whose branch was
   dropped is archived when the ledger marks it `dropped`.
