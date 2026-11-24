@@ -35,6 +35,9 @@ Definition of done: <build command> and <test command> pass, <check command> pri
 cover the new code, the owning doc is updated. If a step cannot run here (device, paid key, window, server), say so
 and simulate it, marked "simulated".
 
+Run builds, tests and benches in the foreground and wait for them: an idle session is not woken by its own
+background command, so a worker that backgrounds its build and ends its turn stalls until the lead nudges it.
+
 Commit small, conventional commits, each ending with "<attribution line>". <Push rule: "Do not push" or "Push your
 branch only">. Never merge into <default branch>; the lead does that after review and the gate.
 
