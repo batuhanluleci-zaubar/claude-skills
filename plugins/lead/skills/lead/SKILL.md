@@ -130,7 +130,10 @@ Run `scripts/waves.py` on the intake (JSON, see the script's header) or do the s
    do not count. Account for global locks (one GPU window, one device, one simulator), shared API quotas and other
    leads' workers already running. Capacity, machine choice and worktree count are the lead's decisions: never ask
    the user which machine or how many; fill every idle machine with ready tasks, in the order of step 4, and say in
-   one line where each runs.
+   one line where each runs. Give each machine a role by fit (an OS-specific task goes to that OS; GPU or measurement
+   work to the machine whose hardware the numbers are about; the lead's own machine keeps headroom for reviews and
+   merges), keep a per-machine cap in the profile, and keep one script that reads load, disk and worktrees of all
+   machines in one call.
 4. Order inside a wave: critical path first (longest chain of dependents), then L before S, so the wave ends
    together.
 5. Show the user the table (task, wave, depends on, touches, unit, model) and the decision list, in one message.
