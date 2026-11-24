@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Lead several tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, review, gate, merge, ledger. Terse chat, few tokens, fast. Use for task lists or parallel work. (v2026.1124.154523)"
+description: "Lead several tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, review, gate, merge, ledger. Terse chat, few tokens, fast. Use for task lists or parallel work. (v2026.1124.161405)"
 ---
 
 # Lead: many tasks, many workers, one owner
@@ -102,7 +102,10 @@ Waves (`scripts/waves.py`, or by hand):
    default branch in before its own merge.
 3. Capacity and machines: the lead's decision, never a question (`machines.md`). Fill every idle machine with ready
    tasks and say in one line where each runs.
-4. Order in a wave: critical path first, then L before S.
+4. Order in a wave: critical path first, then L before S. Integrate in small batches: two to four reviewed branches
+   per integration branch, gated while the rest keep working, never one big-bang integration of a whole wave (each red
+   gate on a big batch costs a full CI round for every branch in it). Prove a fix on the failing jobs only, then gate
+   in full.
 5. Show the table (task, wave, depends on, touches, unit, model, machine) and the decision list in one message.
    If the user already said start, start.
 

@@ -32,6 +32,10 @@ review: a fresh subagent given the diff and the brief, not your opinion of it (o
 - CI needs the branch on the remote. Gate the integration branch, not each worker branch: one run covers the wave.
   Pushing worker branches for handover must not start runs (CI on push only for the default and integration
   branches); cancel superseded runs before each gate (`gh run list`, `gh run cancel`).
+- Slow CI is usually cold builds, not the queue: per-commit cache keys over the provider's cache quota evict each
+  other, and cancelled runs save near-empty caches. Persistent build and ccache dirs on self-hosted runners, or
+  per-branch keys restored from the default branch and saved only after a green build, keep builds warm. Check the
+  cache usage (`gh api repos/<repo>/actions/cache/usage`) and per-job step times before blaming the runners.
 - A newer push to a ref cancels that ref's running CI (concurrency with cancel-in-progress). Batch the lead's own
   fixes and push the integration branch and the default branch once per round; a stream of small pushes means no run
   ever completes. Run the doc-link check before pushing docs to the default branch: a link to a section that exists only
