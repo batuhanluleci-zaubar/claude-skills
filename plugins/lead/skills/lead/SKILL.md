@@ -34,6 +34,11 @@ References (read when the step needs them):
   `branch -D` of unmerged work) in a checkout another session uses.
 - Verify, do not trust: a worker's report is a claim until you have read the diff and seen the gate.
 - Do not wait without a reason, do not poll. The platform wakes you when a worker ends a turn.
+- Decide the mechanics yourself: opening and removing worktrees, how many workers run and on which machine, splitting
+  a task into sub-tasks or subagents, re-planning after a red gate. Ask the user only for what section 2 calls a user
+  decision (direction, product, money, accounts, someone else's machine) and for permissions the repo does not grant.
+- When the user hands over a whole plan, start every task it can start now across all machines in the same turn;
+  never run it slower than the capacity allows just to keep the session simple.
 
 ## 1. Set up (once per repo, once per batch)
 
@@ -88,9 +93,13 @@ Run `scripts/waves.py` on the intake (JSON, see the script's header) or do the s
 2. Dependency: a task waits for what it needs. Pipelining: once the dependency's branch is reviewed (even before it
    is merged), start the dependent task from that branch (`git merge <dep branch>` as its first step); merge the
    default branch into it before its own merge.
-3. Capacity: run at most `max_parallel` building workers (profile; default `min(cores / 3, free disk / per-worktree
-   cost, 5)`). Docs-only and research workers do not count. Account for global locks (one GPU window, one device,
-   one simulator), shared API quotas and other leads' workers already running.
+3. Capacity: count it over every machine the profile lists (this one, SSH hosts, cloud environments the user
+   allowed), not only this one: per machine `min(cores / 3, free disk / per-worktree cost, its own cap)` building
+   workers, measured now (`uptime`, `df -h`, `sysctl -n hw.ncpu` locally and over SSH). Docs-only and research workers
+   do not count. Account for global locks (one GPU window, one device, one simulator), shared API quotas and other
+   leads' workers already running. Capacity, machine choice and worktree count are the lead's decisions: never ask
+   the user which machine or how many; fill every idle machine with ready tasks, in the order of step 4, and say in
+   one line where each runs.
 4. Order inside a wave: critical path first (longest chain of dependents), then L before S, so the wave ends
    together.
 5. Show the user the table (task, wave, depends on, touches, unit, model) and the decision list, in one message.

@@ -27,8 +27,13 @@ review: a fresh subagent given the diff and the brief, not your opinion of it (o
 
 - Use the profile's gate: a local check command, CI on the pushed branch, or both, in that order.
 - CI needs the branch on the remote: push the branch (if allowed) or ask the worker to.
-- Watch budgets: many parallel `--wait` watchers on a hosted CI can empty an account's API quota for everyone. Check
-  a run once, in the background, after the slowest job's usual time; `gh api rate_limit` shows what is left.
+- Fail-fast watch when the repo has one (the profile's gate line, e.g. `ci gate SHA --watch`): start it once, in the
+  background, right after the push; it returns at the first failing required job or when all are green, so the
+  next step starts then, not after a fixed sleep. Read its exit code: green, red, or no decision (the profile names
+  the codes); no decision is never green. Without one, check a run once, in the background, after the slowest job's
+  usual time.
+- Watch budgets: many parallel `--wait` watchers on a hosted CI can empty an account's API quota for everyone. One
+  watcher per commit, polling every few minutes; `gh api rate_limit` shows what is left.
 - Flaky: one rerun. Red twice is real.
 - Infrastructure failure (runner, cache, quota, expired token): not the worker's fault; fix or report it.
 
