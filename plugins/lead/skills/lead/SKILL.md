@@ -96,6 +96,20 @@ cooks and GPU jobs on different machines so they do not compete; keep work that 
 phone, board) on the machine it is plugged into, or copy the built artifact there. A worker on another machine works
 in its own worktree there and never switches that machine's main checkout. Write the machine in the ledger row.
 
+Use the machines, not only list them:
+- Run each worker ON the machine that does its heavy work (desktop app: `start_session` with that machine's SSH
+  target or preset), not on the lead's machine driving builds over `ssh`: sessions, compilers and cooks then load
+  the right machine. Keep the lead's own machine light enough to review, merge and hand out the device.
+- A machine that lacks the build cache, cook or dependencies gets a lane-setup task first (sync, one full cook or
+  build), so later workers there only do incremental or code-only builds.
+- Re-measure every machine (load, free disk, what runs) at each wave and each report; move the next build to the
+  least loaded machine that has a lane. A machine busy with another lead's work is not taken; check it again
+  next wave.
+- An attached device is usually the real bottleneck: keep it busy. Workers build and dry-run before their slot, each
+  device run is one command, the next worker's build is ready when the slot frees, and the lead hands the slot on at
+  once.
+- Tell the user honestly how each machine is used (busy, idle, why), and fix an idle one rather than report it.
+
 Pick the model per worker: the strongest for design-heavy or risky tasks, a cheaper one for read-only research,
 docs and mechanical edits. Say the choice in the ledger.
 

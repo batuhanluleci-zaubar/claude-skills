@@ -14,6 +14,12 @@ Updated: <YYYY-MM-DD HH:MM>, lead: <session id or name>, lead branch: <branch>.
 
 Statuses: planned, running, reported, changes requested, gated, merged, dropped, parked (user decision).
 
+## Machines (re-measured each wave)
+
+| Machine | Load / cores | Free disk | Lane (cook, cache) | Runs now | Device |
+| --- | --- | --- | --- | --- | --- |
+| <name> | <n / n> | <GB> | <ready / setup needed> | <workers, other leads> | <attached device or none> |
+
 ## Decisions waiting for the user
 - <question> (blocks: <tasks>)
 
