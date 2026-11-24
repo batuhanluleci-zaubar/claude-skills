@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Lead several tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, review, gate, merge, ledger. Terse chat, few tokens, fast. Use for task lists or parallel work. (v2026.1124.163744)"
+description: "Lead several tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, review, gate, merge, ledger. Terse chat, few tokens, fast. Use for task lists or parallel work. (v2026.1124.190607)"
 ---
 
 # Lead: many tasks, many workers, one owner
@@ -44,6 +44,17 @@ Speed:
 - A few tool calls or a fix you found: do it yourself now, do not spawn.
 - Workers prove their branch with the local precheck; CI runs once per wave on the integration branch.
 - Pipeline: a dependent task starts from its dependency's reviewed branch, not after the merge.
+- Timebox every investigation in its brief: a root-cause hunt gets 30 to 45 minutes. Before funding one, ask "does
+  the root cause change the fix?"; if not, ship the fix now. When the box runs out, the lead decides a policy or a
+  workaround and grants no extension (2026-11-24: a Mesh GPU hang was bisected for hours although the close-up Mesh
+  cost about 48 ms of GPU and could never reach 72 fps; the policy fix, switching to the splat at close range, was
+  there from the start).
+- Every order to a worker carries a hard ETA; at the ETA ask for a one-line status.
+- A single global lock (one test device, one GPU) is the critical path. Schedule it in the ledger (owner, slot,
+  hand-back); workers code while another worker holds it, and the lead batches the proofs into one integrated device
+  pass, not one pass per worker.
+- Main goal at risk: cut the optional tracks. Exploratory variants (training sweeps, A/B tables for the user) get a
+  fixed count, and the lead takes a measurable decision itself instead of preparing a table for the user.
 
 ## 1. Ground rules
 
@@ -128,7 +139,8 @@ When a worker reports (`review-merge.md`):
 3. A gap goes back to the same worker (message its session), never a new one. Two failed rounds: re-plan or take it.
 4. Merge only with permission, into a clean main checkout (or an integration worktree). Conflict: abort at once,
    the worker merges the default branch in and re-gates.
-5. After the merge: push if allowed, delete the branch, remove the worktree, archive the worker's session without
+5. After the merge: push if allowed, delete the branch, remove the worktree (never one whose build output is still
+   the base of a staged or pending build, `review-merge.md`), archive the worker's session without
    asking, record refuted ideas in the learnings file, update the ledger, start what the merge unblocked.
 
 ## 7. Ledger

@@ -16,3 +16,6 @@
 | Main checkout dirty or mid-merge by someone else | wait and retry; never commit, abort or reset their state |
 | User decision blocks a task | park the task in the ledger, keep the rest moving, ask in one short question |
 | Context running low | update the ledger, write the handoff, continue from it |
+| Investigation past its timebox | stop it; the lead decides a policy or workaround now, the hunt becomes a follow-up task only if the root cause would change the fix |
+| Workers queued on one device or GPU | schedule the lock in the ledger (owner, slot, hand-back); the others keep coding; one batched device pass by the lead |
+| Worker past its ETA without a status | message it: "one-line status now: done, blocked on, or new ETA" |

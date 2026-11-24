@@ -72,6 +72,9 @@ Only with the user's permission (profile, `CLAUDE.md`, memory, or a yes in chat)
    checkout.
 6. Push the default branch if allowed. Then delete the branch (local and remote if allowed), remove the worktree
    (`git worktree remove <path>`, or the repo's own command), update the ledger, start what this merge unblocked.
+   Before removing a worktree, check that no staged or pending build uses its build output (a cook, `Saved/`,
+   `build/`): read the build manifest's source tree. If one does, keep the worktree until that build is shipped or
+   dropped (2026-11-24: removing such a worktree invalidated a staged build).
 7. Tag a release only if the repo's rules say to.
 
 Repos without merge permission: stop after step 3 with the branch reviewed and gated, and list in one message what
