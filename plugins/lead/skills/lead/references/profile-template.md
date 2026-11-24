@@ -30,6 +30,11 @@ not apply, fill the rest.
 - Pull requests: never / lead opens / user opens
 - Workers may push their own branch: yes/no
 
+## Machines
+- <name>: how to reach it (local, `ssh <host>`, start target / preset, Remote Control), OS, toolchain and version,
+  repo clone path, GPU, attached devices, what else runs there (shared GPU, another lead)
+- Artifact route: where builds made on one machine are copied to reach the device machine
+
 ## Capacity
 - Max building workers at once: <n> (why: cores, RAM, per-worktree disk <GB>, licences)
 - Global locks: <one app window, one device, one simulator, a port>

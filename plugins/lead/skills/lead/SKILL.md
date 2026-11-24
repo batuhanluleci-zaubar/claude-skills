@@ -90,6 +90,12 @@ guess), what it needs from another task (an API, a merged module, a decision), a
 Never one session for all tasks (compaction loses detail, nothing runs in parallel, one stall blocks all). Never one
 session per task without the wave plan (shared files conflict, dependencies break).
 
+Pick the machine per worker: a free machine that has the task's toolchain and data (profile `Machines`, the user's
+memory, the session tools' SSH targets and presets, Remote Control sessions on other computers). Put heavy builds,
+cooks and GPU jobs on different machines so they do not compete; keep work that needs an attached device (headset,
+phone, board) on the machine it is plugged into, or copy the built artifact there. A worker on another machine works
+in its own worktree there and never switches that machine's main checkout. Write the machine in the ledger row.
+
 Pick the model per worker: the strongest for design-heavy or risky tasks, a cheaper one for read-only research,
 docs and mechanical edits. Say the choice in the ledger.
 

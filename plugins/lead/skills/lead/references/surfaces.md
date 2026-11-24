@@ -57,6 +57,17 @@ Option 2, separate processes (for long tasks):
   version; never pick a broader permission mode than the user's own).
 - You are notified when the background command exits; read its output file and the branch.
 
+## Several machines
+
+- Desktop app: `list_start_targets` lists SSH connections and presets; start a worker there with `target: "ssh"` +
+  `host` (or `preset`) and a `cwd` on that machine. Remote Control sessions on other computers show in `ListAgents`;
+  message one to run a task on its computer.
+- A worker may also drive another machine over `ssh` (builds, cooks, measurements) from its own worktree there.
+- One attached device is one global lock across all machines: the lead hands it out ("device go" / "device free")
+  and workers run nothing on it without that.
+- Builds made elsewhere are copied to the device machine before deploy; the build's manifest names the machine and
+  the commit it was built from.
+
 ## Cloud sessions
 
 - Only when the user asked for the cloud. The session starts from the pushed lead branch (commit and push the brief
