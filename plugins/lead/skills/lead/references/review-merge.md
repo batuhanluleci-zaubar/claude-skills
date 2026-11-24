@@ -29,6 +29,10 @@ review: a fresh subagent given the diff and the brief, not your opinion of it (o
 - CI needs the branch on the remote. Gate the integration branch, not each worker branch: one run covers the wave.
   Pushing worker branches for handover must not start runs (CI on push only for the default and integration
   branches); cancel superseded runs before each gate (`gh run list`, `gh run cancel`).
+- A newer push to a ref cancels that ref's running CI (concurrency with cancel-in-progress). Batch the lead's own
+  fixes and push the integration branch and the default branch once per round; a stream of small pushes means no run
+  ever completes. Run the doc-link check before pushing docs to the default branch: a link to a section that exists only
+  on an integration branch turns the default branch red on every platform.
 - In zsh, quote refspecs built from variables: `git push origin "${b}:refs/heads/${b}"` (a bare `$b:r` is zsh's root
   modifier and silently mangles the refspec); check with `git ls-remote --heads origin` afterwards.
 - Fail-fast watch when the repo has one (the profile's gate line, e.g. `ci gate SHA --watch`): start it once, in the
