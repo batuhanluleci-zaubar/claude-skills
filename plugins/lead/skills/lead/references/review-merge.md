@@ -32,6 +32,9 @@ review: a fresh subagent given the diff and the brief, not your opinion of it (o
 - CI needs the branch on the remote. Gate the integration branch, not each worker branch: one run covers the wave.
   Pushing worker branches for handover must not start runs (CI on push only for the default and integration
   branches); cancel superseded runs before each gate (`gh run list`, `gh run cancel`).
+- Size the gate to the team: a small team gates each merge on the product's real targets only (a lint, the main
+  desktop build, the shipping platform) and runs the full platform matrix nightly or by hand; a red nightly is fixed the
+  next day and never blocks a merge.
 - Slow CI is usually cold builds, not the queue: per-commit cache keys over the provider's cache quota evict each
   other, and cancelled runs save near-empty caches. Persistent build and ccache dirs on self-hosted runners, or
   per-branch keys restored from the default branch and saved only after a green build, keep builds warm. Check the

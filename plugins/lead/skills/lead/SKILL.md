@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Lead several tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, review, gate, merge, ledger. Terse chat, few tokens, fast. Use for task lists or parallel work. (v2026.1124.161405)"
+description: "Lead several tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, review, gate, merge, ledger. Terse chat, few tokens, fast. Use for task lists or parallel work. (v2026.1124.163744)"
 ---
 
 # Lead: many tasks, many workers, one owner
