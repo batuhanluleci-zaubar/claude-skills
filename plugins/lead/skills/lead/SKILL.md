@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. (v2026.1125.104454)"
+description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 10:45"
 ---
 
 # Lead: many tasks, many workers, one owner
