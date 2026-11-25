@@ -26,3 +26,4 @@
 | Workers queued on one device or GPU | schedule the lock in the ledger (owner, slot, hand-back); the others keep coding; one batched device pass by the lead |
 | Worker past its ETA without a status | message it: "one-line status now: done, blocked on, or new ETA" |
 | A brief says a capability is missing ("no CUDA here", "no Windows") and the user names a machine that has it | the machine list was not read at set-up: list the start targets and SSH hosts, probe them, correct the running worker with a message, add the machine to the profile |
+| The lead only waited for final reports; the user asks whether the workers are being checked | run a checkpoint now (SKILL.md 5b: commits, uncommitted files, doc, live job, locks), say honestly that it had not been done, schedule the next ones |
