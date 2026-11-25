@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 # Prints what a lead must know before starting a wave: git state, worktrees, branches, disk, cores, memory, API budget.
+# --hosts h1,h2 (or LEAD_HOSTS) adds load, cores, memory and free disk of each SSH host, read in one call per host.
 set -uo pipefail
+
+hosts="${LEAD_HOSTS:-}"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --hosts) hosts="${2:-}"; shift 2 ;;
+    *) echo "usage: preflight.sh [--hosts h1,h2]"; exit 2 ;;
+  esac
+done
 
 repo="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "not inside a git repository"; exit 2; }
 common="$(git rev-parse --git-common-dir)"
@@ -45,6 +54,18 @@ elif command -v nproc >/dev/null; then
   echo "cores: $(nproc), memory: $(awk '/MemTotal/ {printf "%d GB", $2/1048576}' /proc/meminfo)"
 fi
 df -h "$repo" | tail -1 | awk '{print "disk free: " $4 " of " $2 " (" $5 " used)"}'
+
+if [[ -n "$hosts" ]]; then
+  echo "== other machines"
+  IFS=',' read -r -a host_list <<<"$hosts"
+  for h in "${host_list[@]}"; do
+    line="$(ssh -o BatchMode=yes -o ConnectTimeout=5 "$h" '
+      c=$(sysctl -n hw.ncpu 2>/dev/null || nproc); m=$(( $(sysctl -n hw.memsize 2>/dev/null || awk "/MemTotal/ {print \$2*1024}" /proc/meminfo) / 1073741824 ))
+      l=$(uptime | sed "s/.*load averages*: //"); d=$(df -h ~ | tail -1 | awk "{print \$4}")
+      echo "cores $c, memory $m GB, load $l, free disk $d"' 2>/dev/null)" || line="unreachable"
+    echo "$h: $line"
+  done
+fi
 
 echo "== GitHub API budget"
 if command -v gh >/dev/null && gh auth status >/dev/null 2>&1; then

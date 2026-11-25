@@ -16,6 +16,12 @@
 | Main checkout dirty or mid-merge by someone else | wait and retry; never commit, abort or reset their state |
 | User decision blocks a task | park the task in the ledger, keep the rest moving, ask in one short question |
 | Context running low | update the ledger, write the handoff, continue from it |
-| Investigation past its timebox | stop it; the lead decides a policy or workaround now, the hunt becomes a follow-up task only if the root cause would change the fix |
+| Investigation past its timebox | stop it; the lead decides a policy or workaround now, the hunt becomes a follow-up task only if the root cause would change the fix (2026-11-24: a GPU hang was bisected for hours though the path it hit could never meet the frame budget; the policy fix was there from the start) |
+| Worker reports `NEEDS_CONTEXT` | answer with the fact or the file to read, in the same session; add it to the brief for the next batch |
+| Worker reports `BLOCKED` | a user decision: park the task and ask; a lock: schedule it; a broken plan: re-plan the task |
+| `drift.py` shows a branch outside its brief's paths, or two running branches on one file | ask the later one to stop at a commit; move or drop the extra work, or re-wave |
+| Review finding still open after three rounds | the lead re-plans, takes the task, or parks the finding with a ruling in the ledger; never drops it |
+| `waves.py` verdict `serial` | do the chain yourself or give it to one worker; no fan-out |
+| Token budget at 80 % | cut the optional tracks, say so in one line; at 100 % start nothing new and ask |
 | Workers queued on one device or GPU | schedule the lock in the ledger (owner, slot, hand-back); the others keep coding; one batched device pass by the lead |
 | Worker past its ETA without a status | message it: "one-line status now: done, blocked on, or new ETA" |

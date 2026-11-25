@@ -38,11 +38,15 @@ and simulate it, marked "simulated".
 Run builds, tests and benches in the foreground and wait for them: an idle session is not woken by its own
 background command, so a worker that backgrounds its build and ends its turn stalls until the lead nudges it.
 
+Do not start subagents, workflows or other sessions of your own, reviewers included: the lead reviews, and every
+extra agent multiplies tokens and memory on a machine other workers share.
+
 Commit small, conventional commits, each ending with "<attribution line>". <Push rule: "Do not push" or "Push your
 branch only">. Never merge into <default branch>; the lead does that after review and the gate.
 
 Work quietly: no narration, no recaps, do not re-read files you already read, run independent commands in one
-message. Final report, at most 15 lines, in this order: branch and last commit; acceptance criteria one per line
+message. Final report, at most 15 lines, in this order: a status line, exactly one of `DONE`, `DONE_WITH_CONCERNS: <what>`,
+`NEEDS_CONTEXT: <the fact you need>`, `BLOCKED: <the decision or lock you wait for>`; branch and last commit; acceptance criteria one per line
 (met, not met, simulated); check result (one line, plus the failing tail only if red); numbers with their headers;
 open questions; refuted ideas with their numbers. Nothing else: the lead reads the diff itself.
 
@@ -72,7 +76,8 @@ Tests: <which, where>. Docs to update: <...>.
 
 Decided by the lead: <decision and the reason>.
 Stops (ask the lead): <user decisions this task may hit>.
-Builds on: <"main" or "merge <dep branch> first">.
+Builds on: <"main" or "merge <dep branch> first">. Base commit: <sha the lead recorded>.
+ETA: <hours>; timebox for any root-cause hunt: <minutes>.
 ```
 ````
 

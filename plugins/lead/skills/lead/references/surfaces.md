@@ -13,16 +13,15 @@ If a session tool is listed but not loaded, load it first (ToolSearch, `select:<
 
 ## Desktop app
 
-Start one session per task of the wave:
+Start one session per task of the wave. The session tool's own description is the authority on its parameters (they
+change with the app); what the lead decides:
 
-- `initiation`: `"user_asked"` when the user said to start (in their own words); otherwise `"own_initiative"` cards
-  they start with a click, or `"offer"` for a task they named in their latest message.
-- `context: "fresh"` (the brief carries everything); `"fork"` only while this conversation is short and the task
-  leans on it.
-- `use_worktree: true`, `source_branch`: the lead branch that holds the committed brief.
-- `title`: short task name; `prompt`: "Open `<brief path>`, follow the common preface, do task X, topic T.";
-  `background`: how the task fits the waves and which branch it may build on.
-- `model`: per the plan (cheaper for read-only or docs work).
+- initiation: started because the user said so in their own words, otherwise offered as cards they start.
+- a fresh context (the brief carries everything); a fork only while this conversation is short and the task leans
+  on it.
+- its own worktree, based on the lead branch that holds the committed brief.
+- prompt: "Open `<brief path>`, follow the common preface, do task X, topic T."; title: the short task name.
+- model: per the plan (cheaper for read-only or docs work).
 - Write a bold title line and one sentence before each start; mark a chapter before starting several.
 
 After starting:

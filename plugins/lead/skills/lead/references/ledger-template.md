@@ -6,11 +6,14 @@
 # Lead ledger
 
 Updated: <YYYY-MM-DD HH:MM>, lead: <session id or name>, lead branch: <branch>.
+Token budget: <N worker-sessions (S = 1, M = 2, L = 4)>, spent so far: <n>; at 80 % the optional tracks are cut.
 
-| # | Task | Wave | Unit | Model | Machine | Worker | Branch | Worktree | Status | Gate | Merge | Next action |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| A | REST client | 1 | session | strong | this Mac | local_ab12 | feature/rest | ../wt/rest | gated | CI 1234 green | | merge after B's review |
-| B | Auth | 2 | session | cheap | builder | | feature/auth | | planned | | | starts from A's branch once A is reviewed |
+| # | Task | Wave | Unit | Model | Machine | Worker | Branch | Worktree | Base | Spec | Quality | Status | Gate | Merge | Next action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| A | REST client | 1 | session | strong | this Mac | local_ab12 | feature/rest | ../wt/rest | 1a2b3c4 | pass | pass | gated | CI 1234 green | | merge after B's review |
+| B | Auth | 2 | session | cheap | builder | | feature/auth | | | | | planned | | | starts from A's branch once A is reviewed |
+
+Findings parked with a ruling: <task, finding, ruling, why>.
 
 Statuses: planned, running, reported, changes requested, gated, merged, dropped, parked (user decision).
 

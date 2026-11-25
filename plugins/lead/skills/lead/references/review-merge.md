@@ -4,16 +4,30 @@
 
 ```bash
 git fetch --all --prune
-git log --oneline <default>..<branch>
-git diff --stat <default>...<branch>
-git diff <default>...<branch> -- <paths that carry risk>
+git log --oneline <base>..<branch>
+git diff --stat <base>...<branch>
+git diff <base>...<branch> -- <paths that carry risk>
 ```
+
+`<base>` is the base commit the ledger recorded at launch (after a merge of the default branch into the worker's
+branch, use `<default>...<branch>`). Never `HEAD~1`: it hides every commit but the last.
+
+Two stages, in this order, each with its own verdict in the ledger. The quality stage starts only after spec passes.
 
 Read the stat first, then only the hunks that carry risk (logic, security, data, concurrency, public API); skip
 generated files and pure moves.
 
-- Scope: only the brief's paths, or a stated reason. Unrelated refactors go back.
-- Acceptance criteria: each one shown by a test, a command output or a capture, not by prose.
+### Stage 1: spec (does it do what the brief asked?)
+
+- Status line: the report starts with `DONE` or `DONE_WITH_CONCERNS`; read every concern before the diff.
+- Acceptance criteria: each one shown by a test, a command output or a capture, not by prose. "Close enough" fails.
+- Scope: only the brief's paths (`scripts/drift.py <base> <branch> --paths ...` lists the rest), or a stated reason.
+  Unrelated refactors go back.
+- Nothing missing: every numbered scope item is in the diff or reported as not done.
+
+### Stage 2: quality (is it sound?)
+
+- Correctness: the risky hunks read line by line (logic, error paths, concurrency, data loss, public API).
 - Tests: new code has tests; they fail without the change (ask the worker to show it for a bug fix).
 - Docs: the owning doc changed in the same branch when behaviour or direction changed.
 - Numbers: every performance claim has its measurement header (device, build, commit, n) per the repo's rules.
@@ -24,7 +38,12 @@ generated files and pure moves.
 - Decision records: a new number does not collide with one on the default branch; renumber before merging.
 
 For a diff over a few hundred lines, or any change to security, data loss or concurrency, get an independent
-review: a fresh subagent given the diff and the brief, not your opinion of it (or `/code-review` if the user wants).
+review: a fresh subagent given the diff file (against the base) and the brief, not your opinion of it and no hint of
+what you expect it to find (or `/code-review` if the user wants). Do not re-run tests the worker already ran on the
+same commit; the gate runs them again on the integration branch.
+
+Findings: each one is fixed by the worker, or parked with a written ruling in the ledger. None is dropped silently,
+and no task moves to `gated` with an open finding that is neither fixed nor parked.
 
 ## The gate
 
@@ -35,10 +54,8 @@ review: a fresh subagent given the diff and the brief, not your opinion of it (o
 - Size the gate to the team: a small team gates each merge on the product's real targets only (a lint, the main
   desktop build, the shipping platform) and runs the full platform matrix nightly or by hand; a red nightly is fixed the
   next day and never blocks a merge.
-- Slow CI is usually cold builds, not the queue: per-commit cache keys over the provider's cache quota evict each
-  other, and cancelled runs save near-empty caches. Persistent build and ccache dirs on self-hosted runners, or
-  per-branch keys restored from the default branch and saved only after a green build, keep builds warm. Check the
-  cache usage (`gh api repos/<repo>/actions/cache/usage`) and per-job step times before blaming the runners.
+- Slow CI is usually cold caches, not the queue: check per-job step times before blaming the runners; the fix
+  itself is CI work (the `github-actions-optimization` skill, or the repo's CI doc), not the lead's.
 - A newer push to a ref cancels that ref's running CI (concurrency with cancel-in-progress). Batch the lead's own
   fixes and push the integration branch and the default branch once per round; a stream of small pushes means no run
   ever completes. Run the doc-link check before pushing docs to the default branch: a link to a section that exists only

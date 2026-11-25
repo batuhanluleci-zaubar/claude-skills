@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Plans waves from a task list: no two conflicting tasks in one wave, needs before dependents, capacity respected.
+# Ends with a verdict: "parallel" when some wave runs two building tasks at once, else "serial" (no fan-out pays).
 #
 # Input (JSON file or stdin):
 # {
@@ -131,7 +132,13 @@ def plan(data):
         if not wave:
             raise ValueError("no task can start; check needs")
         waves.append([t["id"] for t in wave])
+    widest = max(
+        (sum(1 for i in wave if by_id[i].get("cost", "build") not in FREE_COSTS) for wave in waves), default=0
+    )
+    verdict = "parallel" if widest >= 2 else "serial"
     return {
+        "verdict": verdict,
+        "widest_wave": widest,
         "waves": waves,
         "critical_path": critical_path(tasks, lengths, dependents),
         "deferred": deferred,
@@ -153,6 +160,10 @@ def print_plan(result, tasks):
     for task_id, reasons in result["deferred"].items():
         for reason in reasons:
             print(f"Deferred {task_id}: {reason}")
+    if result["verdict"] == "serial":
+        print("Verdict: serial (no wave runs two building tasks; do the chain yourself or give it to one worker)")
+    else:
+        print(f"Verdict: parallel (up to {result['widest_wave']} building tasks at once)")
 
 
 def main(argv):
