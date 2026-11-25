@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 13:42"
+description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 14:19"
 ---
 
 # Lead: many tasks, many workers, one owner
@@ -44,7 +44,8 @@ Tokens:
 - Model per worker: the cheapest that can do it (research, docs, mechanical edits, reviews of small diffs); the
   strongest only for design-heavy or risky work. Write the choice in the ledger.
 - A fresh-subagent second review only for large or risky diffs (`review-merge.md`), never by default.
-- No polling, no sleeping, no watchers stacked up: the platform wakes you when a worker ends a turn.
+- No busy polling, no sleeping, no watchers stacked up: the platform wakes you when a worker ends a turn. That is not
+  supervision: a running worker is inspected at checkpoints (section 5b), which cost a few git calls each.
 
 Speed:
 
@@ -142,7 +143,28 @@ Waves (`scripts/waves.py`, or by hand):
 2. Commit the brief on the lead branch; start every worker from it.
 3. Start the wave as `surfaces.md` says; record id, branch, worktree, machine and the **base commit** (the commit the
    worker starts from) in the ledger at once. Every later diff is taken against that base, never `HEAD~1`.
-4. End the turn.
+4. Schedule the first checkpoint (section 5b), then end the turn.
+
+## 5b. Supervise while they run
+
+Waiting for a worker's final report is not leading. Inspect every running worker at a checkpoint: about every 20 to 30
+minutes, at each quarter of its time box, and on every turn-end note that is not its final report. One wake-up covers
+all workers (a scheduled wake-up or a loop where the surface has one; otherwise each note and each user message is a
+checkpoint). A checkpoint reads the work, never the worker's word:
+
+1. `git fetch`; per worker `git log <base>..origin/<branch>` and, where its tree is reachable, `git status --short`
+   there: what is committed, what lies uncommitted and for how long. `scripts/drift.py` for paths outside the brief.
+2. The top of its doc or WIP notes, and the first lines of new code: is it doing the brief's task, by the brief's
+   method, with the tool the brief named (the production tool, not a stand-in)? Read the decision it took first.
+3. Its machine: is its job alive (process, GPU or device in use by it and only by it), is a lock held correctly.
+4. Act at once on what you see: a wrong direction or a stand-in tool gets a correcting message now, not at the report;
+   an hour of uncommitted work gets "commit and push"; no commit and no live job since the last checkpoint gets
+   "one-line status now: done, blocked on, or new ETA"; a finding another worker needs is forwarded to it.
+5. One ledger line per checkpoint (time, per worker: last commit, state, what you did), and one line to the user only
+   when something changed.
+
+A checkpoint that finds nothing wrong costs under a minute; skipping them costs the whole time box when a worker
+drifted in its first ten minutes.
 
 ## 6. Review, gate, merge
 
