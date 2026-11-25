@@ -16,6 +16,9 @@ not apply, fill the rest.
 - Worktree removal: `<command>` (or `git worktree remove`)
 - Repo scanners the review must see clean: `<commands>`
 
+- Other machines for `scripts/preflight.sh --hosts`: `<host1,host2>` (or none)
+- Batch token budget default: `<N worker-sessions>` (or the skill's S = 1, M = 2, L = 4)
+
 ## Places
 - Default branch: `main`; lead branch: `main` (or `lead/<date>`)
 - Branch prefixes: `feature/`, `fix/`, `spike/`, `docs/`

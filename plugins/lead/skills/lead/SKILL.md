@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Lead several tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, review, gate, merge, ledger. Terse chat, few tokens, fast. Use for task lists or parallel work. (v2026.1124.190607)"
+description: "Lead several independent tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, two-stage review, gate, merge, ledger. Terse chat, few tokens, fast. Use for a task list, a backlog, a plan to execute, \"lead this\", \"in parallel\", \"paralel yap\", \"hepsini yürüt\". Not for one task or for tightly coupled steps of one change. (v2026.1125.104028)"
 ---
 
 # Lead: many tasks, many workers, one owner
@@ -9,12 +9,20 @@ You plan, brief, review, gate, merge and report; workers (sessions, subagents, c
 the plan and the integration branch, never a worker's diff. Use this for two or more tasks, a backlog or a plan to
 execute, or "lead this", "in parallel", "work autonomously". Not for one task.
 
+**Go or no-go first.** Parallel work costs tokens: one agent uses about 4 times a chat's tokens, a multi-agent run
+about 15 times (Anthropic, "How we built our multi-agent research system", 2025). It pays only where tasks are
+independent. After intake run `scripts/waves.py`: if its verdict is `serial` (no wave holds two building tasks, or
+every task waits on the one before), do the tasks yourself in order, or hand the whole chain to one worker, and say so
+in one line. Tightly coupled steps of one change (one feature across layers that must land together) are one task.
+
 Read a reference only when its step comes up:
 `references/surfaces.md` (start, message, wait for workers per surface), `brief-template.md` (TASKS file, preface,
 task block, report), `review-merge.md` (checklist, gate, CI, merge, cleanup), `machines.md` (machines, capacity,
 disk), `failures.md` (symptom, answer), `profile-template.md` (`.claude/lead-profile.md`), `ledger-template.md`
 (ledger, handoff). Scripts: `scripts/preflight.sh` (git, worktrees, disk, cores, memory, API budget in one call),
-`scripts/waves.py` (task list to waves and critical path).
+`scripts/waves.py` (task list to waves, critical path and the go or no-go verdict), `scripts/drift.py` (files each
+running branch really touches, against its brief and the other branches), `evals/` (scenarios to check the skill
+after a change).
 
 ## 0. Talk short, spend little, move fast
 
@@ -41,18 +49,20 @@ Tokens:
 Speed:
 
 - Start every ready task in the same turn, across all machines; independent tool calls go in one message.
-- A few tool calls or a fix you found: do it yourself now, do not spawn.
+- A few tool calls, or a fix outside every worker's scope that you found: do it yourself now, do not spawn. Inside a
+  worker's scope the fix goes back to that worker (section 6).
 - Workers prove their branch with the local precheck; CI runs once per wave on the integration branch.
 - Pipeline: a dependent task starts from its dependency's reviewed branch, not after the merge.
 - Timebox every investigation in its brief: a root-cause hunt gets 30 to 45 minutes. Before funding one, ask "does
   the root cause change the fix?"; if not, ship the fix now. When the box runs out, the lead decides a policy or a
-  workaround and grants no extension (2026-11-24: a Mesh GPU hang was bisected for hours although the close-up Mesh
-  cost about 48 ms of GPU and could never reach 72 fps; the policy fix, switching to the splat at close range, was
-  there from the start).
+  workaround and grants no extension (`failures.md`, "Investigation past its timebox").
 - Every order to a worker carries a hard ETA; at the ETA ask for a one-line status.
 - A single global lock (one test device, one GPU) is the critical path. Schedule it in the ledger (owner, slot,
   hand-back); workers code while another worker holds it, and the lead batches the proofs into one integrated device
   pass, not one pass per worker.
+- Token budget per batch: write it in the ledger header at intake (default: the tasks' sizes, S = 1, M = 2, L = 4
+  worker-sessions' worth). Past 80 % of it, cut the optional tracks and say so in one line; past 100 %, stop starting
+  work and ask.
 - Main goal at risk: cut the optional tracks. Exploratory variants (training sweeps, A/B tables for the user) get a
   fixed count, and the lead takes a measurable decision itself instead of preparing a table for the user.
 
@@ -69,8 +79,10 @@ Speed:
   (`machines.md`). Ask only for user decisions (direction, product, money, accounts, someone else's machine) and
   permissions the repo does not grant.
 - Autonomous mode ("work autonomously", "do not ask", or the profile or memory says so): ask nothing, not even
-  end-of-turn buttons. Decide, do, report in one line. What needs the user's own hands or accounts (device, signing,
-  paid key, a real third party) is parked in the ledger and listed once.
+  end-of-turn buttons. It grants no permission: merging, pushing and paid usage still need the standing permission
+  above; without it, finish at "reviewed and gated" and list the batch once. Decide, do, report in one line. What
+  needs the user's own hands or accounts (device, signing, paid key, a real third party) is parked in the ledger and
+  listed once.
 
 ## 2. Set up (once per repo, once per batch)
 
@@ -125,18 +137,26 @@ Waves (`scripts/waves.py`, or by hand):
 1. Write `<briefs dir>/TASKS-<YYYY-MM-DD>[b|c].md` from `brief-template.md`: table, common preface, one short block
    per task (goal, read first, scope, checkable acceptance, tests, docs, branch, decided, stops).
 2. Commit the brief on the lead branch; start every worker from it.
-3. Start the wave as `surfaces.md` says; record id, branch, worktree and machine in the ledger at once.
+3. Start the wave as `surfaces.md` says; record id, branch, worktree, machine and the **base commit** (the commit the
+   worker starts from) in the ledger at once. Every later diff is taken against that base, never `HEAD~1`.
 4. End the turn.
 
 ## 6. Review, gate, merge
 
-When a worker reports (`review-merge.md`):
+When a worker reports (`review-merge.md`), its first line is a status: `DONE`, `DONE_WITH_CONCERNS`,
+`NEEDS_CONTEXT` or `BLOCKED`. `NEEDS_CONTEXT` gets the missing facts, `BLOCKED` a decision or a re-plan; the two
+`DONE`s go to review. While a wave runs, `scripts/drift.py` shows branches that left their brief's paths or now
+overlap: stop the later one before it grows.
 
-1. Read the diff as section 0 says: scope kept, tests, docs with the code, no secrets, no guessed names, repo
-   scanners clean.
+1. Review in two stages, each with its own verdict in the ledger, both required: **spec** (does the diff do what the
+   brief asked, all acceptance criteria shown, nothing outside scope; "close enough" is a fail) and then **quality**
+   (correct, tested, docs with the code, no secrets, no guessed names, repo scanners clean). Read the diff as
+   section 0 says, against the recorded base.
 2. Gate: the profile's local check per branch; one CI run per wave on the integration branch; cancel superseded
    runs first; check a gate once, in the background, when it can have finished.
-3. A gap goes back to the same worker (message its session), never a new one. Two failed rounds: re-plan or take it.
+3. A gap goes back to the same worker (message its session), never a new one, and the lead does not patch it. Round
+   two runs on the next stronger model; after a third failed round the lead re-plans, takes the task itself, or parks
+   the finding with a ruling in the ledger. Never drop a finding silently.
 4. Merge only with permission, into a clean main checkout (or an integration worktree). Conflict: abort at once,
    the worker merges the default branch in and re-gates.
 5. After the merge: push if allowed, delete the branch, remove the worktree (never one whose build output is still
@@ -145,8 +165,9 @@ When a worker reports (`review-merge.md`):
 
 ## 7. Ledger
 
-`<briefs dir>/LEDGER.md` (`ledger-template.md`): one row per task with wave, unit, model, machine, worker id,
-branch, worktree, status (`planned`, `running`, `reported`, `changes requested`, `gated`, `merged`, `dropped`),
+`<briefs dir>/LEDGER.md` (`ledger-template.md`): a header with the batch's token budget, then one row per task
+with wave, unit, model, machine, worker id, branch, worktree, base commit, spec and quality verdicts, status
+(`planned`, `running`, `reported`, `changes requested`, `gated`, `merged`, `dropped`, `parked`),
 gate, merge commit, next action. Update on every state change, commit with the lead's commits. On resume the ledger,
 `git worktree list` and the workers' last reports are the truth, not the chat. Day end or machine move: write the
 handoff from the same template.
@@ -159,3 +180,11 @@ reruns once if flaky, then goes back with the log; a user decision parks only it
 ## 9. End of batch
 
 What merged (commits), what is open and why, decisions waiting, follow-ups as separate tasks; caveman, a few lines.
+Then one line in the ledger on how the skill itself did (a step it missed, a rule that cost time); a repeated one
+becomes an eval in `evals/scenarios.md` and a fix here.
+
+## 10. Changing this skill
+
+Every change is checked against `evals/scenarios.md` before it is published: read each scenario, say what the skill
+now makes the lead do, and compare with the expected behaviour. A scenario that fails blocks the publish. Project war
+stories go in a line of `failures.md` or the repo's profile, never in this file.
