@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 15:04"
+description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 15:21"
 ---
 
 # Lead: many tasks, many workers, one owner
@@ -167,7 +167,14 @@ checkpoint). A checkpoint reads the work, never the worker's word:
    variant, time box, a lock) and say why in one line; relay to the user only what is the user's (direction, money,
    accounts, a permission the repo does not grant) and tell the worker what to do meanwhile. Never leave a worker
    idle on a question, and never count "it reported" when the report ends in one.
-6. One ledger line per checkpoint (time, per worker: last commit, state, what you did), and one line to the user only
+6. No worker sits idle. A session that shows idle is in exactly one of four states, and the lead finds out which
+   at once (its last message in full, then its machine): (a) waiting for its own long job (a training run, a build, a
+   cook): prove the job is alive, then give it work that does not need the result (the next step's code, the scoring
+   script, the doc, the hand-over steps for the lead) - a worker never just waits for a job; (b) stopped on a question,
+   a choice or an offer: answer now (step 5); (c) finished: review, merge, then give it its next task or close it;
+   (d) dead or stuck with no live job: "one-line status now", then re-plan. The user must never be the one who notices
+   an idle worker.
+7. One ledger line per checkpoint (time, per worker: last commit, state, what you did), and one line to the user only
    when something changed.
 
 A checkpoint that finds nothing wrong costs under a minute; skipping them costs the whole time box when a worker

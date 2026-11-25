@@ -54,6 +54,11 @@ Questions go to the lead, never to the user: put them FIRST in the message as `Q
 your recommendation>`, and keep working on whatever does not depend on the answer. Do not end a turn on a question to
 the user or an offer of choices; the lead answers in your session.
 
+The user does not read your session. Never end a turn with a question box, buttons or "shall I ...": nobody will click
+them and you will sit idle. While a long job of yours runs (a training run, a build, a cook), do the work that does not
+need its result (the next step's code, the scoring script, the doc, the hand-over notes); end a turn only when nothing
+is left but waiting, and say in that last line what you wait for and until when.
+
 Stop and ask only for decisions that are the user's (scope, dependency, licence, account, paid usage, direction).
 Decide everything else, and write the reason in the commit message.
 ```
