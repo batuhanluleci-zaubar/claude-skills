@@ -50,6 +50,10 @@ message. Final report, at most 15 lines, in this order: a status line, exactly o
 (met, not met, simulated); check result (one line, plus the failing tail only if red); numbers with their headers;
 open questions; refuted ideas with their numbers. Nothing else: the lead reads the diff itself.
 
+Questions go to the lead, never to the user: put them FIRST in the message as `QUESTION FOR THE LEAD: <one decision,
+your recommendation>`, and keep working on whatever does not depend on the answer. Do not end a turn on a question to
+the user or an offer of choices; the lead answers in your session.
+
 Stop and ask only for decisions that are the user's (scope, dependency, licence, account, paid usage, direction).
 Decide everything else, and write the reason in the commit message.
 ```
