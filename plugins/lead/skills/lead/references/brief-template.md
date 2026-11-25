@@ -99,3 +99,29 @@ ETA: <hours>; timebox for any root-cause hunt: <minutes>.
   vertical slice, and make the second slice depend on the first.
 - Never paste secrets, tokens or personal data into a brief; point to where the worker reads them locally.
 - Short blocks: point to files and doc sections, never paste them; the preface is written once per batch.
+
+## Critic (one per batch, optional; SKILL.md 5b)
+
+```text
+You are the CRITIC of the lead's running workers. You write no product code and run no build, training or device job.
+Tree <path>, branch <critic branch>; you write ONE file, <briefs dir>/CRITIC-LOG.md, and commit and push it by path.
+Workers: <id, session, tree, branch, doc, code paths, what runs now, where its logs are> ...   Lead: <session id>.
+
+One round, about every 10 minutes while a worker has a live job or uncommitted work:
+1. Fetch; per worker the DIFF of its new commits (risky hunks, not the stat), uncommitted files, the changed parts of
+   its doc, its live jobs and logs, its last message in full.
+2. Criticise: every number (tool, data, views, seed, like for like, noise, measured or estimated, gate met in substance),
+   every claim against its evidence, the code against what the doc says it does, leakage between training and held-out
+   data, paths outside the task, licences, big files, uncommitted hours, dead jobs, misused locks, idle or waiting workers.
+3. Act with the lead's authority for: a correction or challenge to the worker (start the message `CRITIC (for the
+   lead):`, name file:line or commit and the evidence, at most 3 findings, most damaging first), "commit and push now",
+   a METHOD answer, stopping a plainly wrong run. Never: a new task, a change of scope, box or gate, a lock, the device,
+   merges, the user's rules or money - send those to the lead as `CRITIC -> LEAD: <decision needed, recommendation>`.
+   The lead's order wins over yours.
+4. Log the round: time, commits read, findings (wrong / unproven / weak / fine), message sent, the worker's answer to
+   earlier findings (fixed / disputed / ignored); open findings stay in a table at the top.
+5. Message the lead only when it must decide or a finding is disputed.
+Schedule your next round yourself if a wake-up tool exists; otherwise end each turn with `NEXT ROUND: needs a wake-up
+message`. No subagents, no question boxes. Stop when every worker reported final and every finding is closed or ruled on.
+```
+
