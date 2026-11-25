@@ -7,6 +7,13 @@ All three are the lead's decisions. Never ask the user which machine or how many
 A free machine that has the task's toolchain and data: the profile's `Machines`, the user's memory, the session
 tools' SSH targets and presets, Remote Control sessions on other computers. Write the machine in the ledger row.
 
+- Read that list at set-up, before the first brief, not when a task turns out to need it: call the start-target
+  listing, read `~/.ssh/config`, and probe each host once (`ssh -o BatchMode=yes <host>`: OS, GPU, free disk, the
+  repo's clone, what runs). A capability the lead's own machine lacks (CUDA, Windows, an attached device) is looked
+  for on the others before a brief says it is missing.
+- No profile, or a profile without a machine you found: write it into `.claude/lead-profile.md` in the same turn
+  (how to reach it, OS, GPU and memory, clone path, role, its limits), so the next lead starts with it.
+
 - Run each worker ON the machine that does its heavy work (desktop app: `start_session` with that machine's SSH
   target or preset), not on the lead's machine driving builds over `ssh`. Keep the lead's machine light enough to
   review, merge and hand out the device.

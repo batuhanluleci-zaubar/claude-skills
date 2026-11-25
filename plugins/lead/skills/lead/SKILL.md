@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 10:45"
+description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 13:42"
 ---
 
 # Lead: many tasks, many workers, one owner
@@ -89,9 +89,12 @@ Speed:
 1. Read `CLAUDE.md`, `README.md`, `.claude/lead-profile.md` and memory. No profile: derive one (commands from CI
    config, `Makefile`, `package.json`, `pyproject.toml`, `Cargo.toml`, `CMakePresets.json`; doc owners from the
    README) and offer to save it (`profile-template.md`).
-2. Run `scripts/preflight.sh`. Note a dirty main checkout or `MERGE_HEAD` (another lead; never touch it), open
+2. List the machines before any plan: the profile's `Machines`, the session tools' start targets (desktop app:
+   `list_start_targets`), `~/.ssh/config`, memory. Never write "not available here" (a GPU, CUDA, another OS, a
+   device) into a brief before this list is read; a machine the profile lacks is added to it (`machines.md`).
+3. Run `scripts/preflight.sh`. Note a dirty main checkout or `MERGE_HEAD` (another lead; never touch it), open
    worktrees and branches, disk, cores, memory, API budget.
-3. Find or create the ledger (section 7). If it exists you are resuming: read it before planning.
+4. Find or create the ledger (section 7). If it exists you are resuming: read it before planning.
 
 ## 3. Intake: one row per task
 

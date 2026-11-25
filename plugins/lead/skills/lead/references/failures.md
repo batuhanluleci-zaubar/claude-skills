@@ -25,3 +25,4 @@
 | Token budget at 80 % | cut the optional tracks, say so in one line; at 100 % start nothing new and ask |
 | Workers queued on one device or GPU | schedule the lock in the ledger (owner, slot, hand-back); the others keep coding; one batched device pass by the lead |
 | Worker past its ETA without a status | message it: "one-line status now: done, blocked on, or new ETA" |
+| A brief says a capability is missing ("no CUDA here", "no Windows") and the user names a machine that has it | the machine list was not read at set-up: list the start targets and SSH hosts, probe them, correct the running worker with a message, add the machine to the profile |
