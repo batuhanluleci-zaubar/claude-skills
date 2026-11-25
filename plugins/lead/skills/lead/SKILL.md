@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 15:31"
+description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 18:12"
 ---
 
 # Lead: many tasks, many workers, one owner
@@ -41,8 +41,21 @@ Tokens:
   generated files and pure docs moves.
 - Briefs point to files and doc sections instead of pasting them. Workers report in at most 15 lines (format in
   the brief), and subagents return conclusions, not file dumps.
-- Model per worker: the cheapest that can do it (research, docs, mechanical edits, reviews of small diffs); the
-  strongest only for design-heavy or risky work. Write the choice in the ledger.
+- **Model and effort per worker, chosen for THAT task, written in every start call.** Never leave `model` out (it then
+  inherits the lead's, usually the most expensive) and never give every worker the same one. Pick by the work, not by the
+  task's importance:
+
+  | Work | Model | Effort |
+  | --- | --- | --- |
+  | read-only: logs, measurements, a status read, moving files, running a fixed script, a critic / reviewer round | the cheapest (a Haiku id) | low |
+  | ordinary code or docs with a clear brief: one module, a config change, a probe script, a doc section, a known fix | a Sonnet id | medium |
+  | multi-file code, a diagnosis across systems, an algorithm, numbers that need judgement | an Opus id | medium or high |
+  | design-heavy, novel or risky work where a wrong turn costs hours (a new renderer path, a trainer, an architecture) | the strongest | high |
+
+  Start one step lower when unsure; move a worker up only after it failed a round (section 6). A long-running role (a
+  critic, a watcher) is never on the strongest model. Write model and effort in the ledger row, and check them at every
+  checkpoint: a worker whose task turned simple is moved down (`set_session_model` where the surface has it).
+  The lead itself: keep its own turns short - delegate the reading, do not re-read, poll nothing.
 - A fresh-subagent second review only for large or risky diffs (`review-merge.md`), never by default.
 - No busy polling, no sleeping, no watchers stacked up: the platform wakes you when a worker ends a turn. That is not
   supervision: a running worker is inspected at checkpoints (section 5b), which cost a few git calls each.
