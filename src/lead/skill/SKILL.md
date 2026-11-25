@@ -160,7 +160,14 @@ checkpoint). A checkpoint reads the work, never the worker's word:
 4. Act at once on what you see: a wrong direction or a stand-in tool gets a correcting message now, not at the report;
    an hour of uncommitted work gets "commit and push"; no commit and no live job since the last checkpoint gets
    "one-line status now: done, blocked on, or new ETA"; a finding another worker needs is forwarded to it.
-5. One ledger line per checkpoint (time, per worker: last commit, state, what you did), and one line to the user only
+5. Read each worker's LAST MESSAGE IN FULL (the session's transcript, not the first lines of a turn-end note: a note
+   is cut short and the question sits at the end). A worker that ended its turn on a question, a choice, an offer
+   ("shall I...", "which of...") or a request for a go-ahead is STOPPED until someone answers, and that someone is the
+   lead. Answer in the same turn, in its session: decide what is the lead's to decide (method, order, scope, which
+   variant, time box, a lock) and say why in one line; relay to the user only what is the user's (direction, money,
+   accounts, a permission the repo does not grant) and tell the worker what to do meanwhile. Never leave a worker
+   idle on a question, and never count "it reported" when the report ends in one.
+6. One ledger line per checkpoint (time, per worker: last commit, state, what you did), and one line to the user only
    when something changed.
 
 A checkpoint that finds nothing wrong costs under a minute; skipping them costs the whole time box when a worker
