@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 15:21"
+description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. · v2026-11-25 15:31"
 ---
 
 # Lead: many tasks, many workers, one owner
@@ -147,7 +147,8 @@ Waves (`scripts/waves.py`, or by hand):
 
 ## 5b. Supervise while they run
 
-Waiting for a worker's final report is not leading. Inspect every running worker at a checkpoint: about every 20 to 30
+Waiting for a worker's final report is not leading, and neither is nodding a report through: the lead's job while
+workers run is to inspect and to criticise. Inspect every running worker at a checkpoint: about every 10 to 15
 minutes, at each quarter of its time box, and on every turn-end note that is not its final report. One wake-up covers
 all workers (a scheduled wake-up or a loop where the surface has one; otherwise each note and each user message is a
 checkpoint). A checkpoint reads the work, never the worker's word:
@@ -174,8 +175,22 @@ checkpoint). A checkpoint reads the work, never the worker's word:
    a choice or an offer: answer now (step 5); (c) finished: review, merge, then give it its next task or close it;
    (d) dead or stuck with no live job: "one-line status now", then re-plan. The user must never be the one who notices
    an idle worker.
-7. One ledger line per checkpoint (time, per worker: last commit, state, what you did), and one line to the user only
+7. Criticise, do not only check. For every number a worker reports ask: which tool, data, views and seed; like for
+   like with its baseline; inside run-to-run noise or not; measured or estimated; is the gate met in substance or only
+   in its letter; does the doc claim more than the table shows. Read the risky hunks of the code behind the number,
+   not the comment above them. Send the challenge to the worker while it still runs; "gate met" without a challenge
+   answered is not accepted.
+8. One ledger line per checkpoint (time, per worker: last commit, state, what you did), and one line to the user only
    when something changed.
+
+**A critic session.** With two or more workers on runs longer than an hour, or when the lead is also building, measuring
+or talking to the user, start one more session whose only job is this section (brief: `brief-template.md`, "Critic"):
+it writes no product code, reads every worker's commits, diffs, logs and last message every ~10 minutes, keeps a
+findings log with open / fixed / disputed, and has the lead's authority for corrections, method answers, "commit now"
+and stopping a plainly wrong run. It never assigns tasks, changes scope, time boxes or gates, moves a lock, merges,
+or decides for the user: those stay with the lead, and the lead's order wins. Tell every worker that it exists and
+what it may do. The lead still reads the critic's log and each diff before a merge: the critic adds eyes, it does not
+replace the review.
 
 A checkpoint that finds nothing wrong costs under a minute; skipping them costs the whole time box when a worker
 drifted in its first ten minutes.
