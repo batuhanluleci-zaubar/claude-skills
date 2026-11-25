@@ -55,7 +55,11 @@ Tokens:
   Start one step lower when unsure; move a worker up only after it failed a round (section 6). A long-running role (a
   critic, a watcher) is never on the strongest model. Write model and effort in the ledger row, and check them at every
   checkpoint: a worker whose task turned simple is moved down (`set_session_model` where the surface has it).
-  The lead itself: keep its own turns short - delegate the reading, do not re-read, poll nothing.
+  The lead itself: an Opus-class model at medium effort is enough for leading (rulings, diff review, gates); the
+  strongest model only while it plans an architecture batch; a Sonnet-class model when the batch is down to monitoring
+  long runs. The lead cannot change its own model: when its phase changes, it tells the user in one line which model
+  fits and the user switches it in the model menu. Keep the lead's own turns short - delegate the reading, do not
+  re-read, poll nothing.
 - A fresh-subagent second review only for large or risky diffs (`review-merge.md`), never by default.
 - No busy polling, no sleeping, no watchers stacked up: the platform wakes you when a worker ends a turn. That is not
   supervision: a running worker is inspected at checkpoints (section 5b), which cost a few git calls each.
