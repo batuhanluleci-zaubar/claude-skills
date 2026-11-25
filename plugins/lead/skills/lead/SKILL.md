@@ -1,6 +1,6 @@
 ---
 name: lead
-description: "Lead several independent tasks at once in any repo: waves by dependency and shared files, one worker per task in its own worktree, two-stage review, gate, merge, ledger. Terse chat, few tokens, fast. Use for a task list, a backlog, a plan to execute, \"lead this\", \"in parallel\", \"paralel yap\", \"hepsini yürüt\". Not for one task or for tightly coupled steps of one change. (v2026.1125.104028)"
+description: "Run several independent tasks in parallel: wave plan, one worker per worktree, two-stage review, merge. Not for a single task. (v2026.1125.104454)"
 ---
 
 # Lead: many tasks, many workers, one owner
