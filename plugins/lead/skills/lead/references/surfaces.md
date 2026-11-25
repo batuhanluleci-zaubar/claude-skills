@@ -21,7 +21,7 @@ change with the app); what the lead decides:
   on it.
 - its own worktree, based on the lead branch that holds the committed brief.
 - prompt: "Open `<brief path>`, follow the common preface, do task X, topic T."; title: the short task name.
-- model: per the plan (cheaper for read-only or docs work).
+- model and effort: ALWAYS set, per SKILL.md section 0's table; omitting them inherits the lead's model.
 - Write a bold title line and one sentence before each start; mark a chapter before starting several.
 
 After starting:
