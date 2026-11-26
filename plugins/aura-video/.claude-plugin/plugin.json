@@ -1,8 +1,8 @@
 {
   "name": "aura-video",
-  "description": "Pull the newest video recorded on the XREAL Aura over adb to this Mac and reveal it in Finder.",
+  "description": "Pull the newest video recorded on the XREAL Aura (Android XR puck) over adb to this Mac and reveal it in Finder. Use when the user has just recorded on the Aura and wants that clip on the Mac.",
   "author": {
     "name": "Zaubar"
   },
-  "version": "2026.1126.120000"
+  "version": "2026.1126.191321"
 }
