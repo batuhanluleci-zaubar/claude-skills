@@ -1,0 +1,8 @@
+{
+  "name": "aura-video",
+  "description": "Pull the newest video recorded on the XREAL Aura over adb to this Mac and reveal it in Finder.",
+  "author": {
+    "name": "Zaubar"
+  },
+  "version": "2026.1126.120000"
+}
