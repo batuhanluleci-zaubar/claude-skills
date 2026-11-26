@@ -13,7 +13,7 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo="batuhanluleci-zaubar/claude-skills"
-plugins=(lead)
+plugins=(lead aura-video)
 vendor=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
