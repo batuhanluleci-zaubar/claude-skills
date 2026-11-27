@@ -19,7 +19,7 @@ Read a reference only when its step comes up:
 `references/surfaces.md` (start, message, wait for workers per surface), `brief-template.md` (TASKS file, preface,
 task block, report), `review-merge.md` (checklist, gate, CI, merge, cleanup), `machines.md` (machines, capacity,
 disk), `failures.md` (symptom, answer), `profile-template.md` (`.claude/lead-profile.md`), `ledger-template.md`
-(ledger, handoff). Scripts: `scripts/preflight.sh` (git, worktrees, disk, cores, memory, API budget in one call),
+(ledger, handoff). Scripts: `scripts/preflight.sh` (git, worktrees, disk, cores, memory, API budget in one call), `scripts/checkpoint.sh` (every running branch in one call: commits since base, silence, diff size, largest hunks, uncommitted files),
 `scripts/waves.py` (task list to waves, critical path and the go or no-go verdict), `scripts/drift.py` (files each
 running branch really touches, against its brief and the other branches), `evals/` (scenarios to check the skill
 after a change).
@@ -168,10 +168,14 @@ Waiting for a worker's final report is not leading, and neither is nodding a rep
 workers run is to inspect and to criticise. Inspect every running worker at a checkpoint: about every 10 to 15
 minutes, at each quarter of its time box, and on every turn-end note that is not its final report. One wake-up covers
 all workers (a scheduled wake-up or a loop where the surface has one; otherwise each note and each user message is a
-checkpoint). A checkpoint reads the work, never the worker's word:
+checkpoint). A checkpoint reads the work, never the worker's word. A worker's message is NOT a checkpoint: answering
+reports all day while no commit is read is the failure this section exists to prevent. Every wake-up starts with the
+script, before any other call, and at least every 30 minutes while workers run:
 
-1. `git fetch`; per worker `git log <base>..origin/<branch>` and, where its tree is reachable, `git status --short`
-   there: what is committed, what lies uncommitted and for how long. `scripts/drift.py` for paths outside the brief.
+1. `scripts/checkpoint.sh <branch>@<base>=<worktree> ...` (all running workers in one call): commits since the base,
+   minutes since the newest commit (flags a branch silent past 45 min), diff size and the files with the most changed
+   lines, uncommitted files in each reachable worktree (local or `host:path` over ssh). `scripts/drift.py` for paths
+   outside the brief.
 2. The top of its doc or WIP notes, and the first lines of new code: is it doing the brief's task, by the brief's
    method, with the tool the brief named (the production tool, not a stand-in)? Read the decision it took first.
 3. Its machine: is its job alive (process, GPU or device in use by it and only by it), is a lock held correctly.
@@ -195,7 +199,9 @@ checkpoint). A checkpoint reads the work, never the worker's word:
 7. Criticise, do not only check. For every number a worker reports ask: which tool, data, views and seed; like for
    like with its baseline; inside run-to-run noise or not; measured or estimated; is the gate met in substance or only
    in its letter; does the doc claim more than the table shows. Read the risky hunks of the code behind the number,
-   not the comment above them. Send the challenge to the worker while it still runs; "gate met" without a challenge
+   not the comment above them: at least the largest-change file the script names for every branch that grew by more
+   than ~100 lines since the last checkpoint, and every shader, kernel, concurrency or data-format hunk before its
+   number is accepted or its switch goes on by default. Send the challenge to the worker while it still runs; "gate met" without a challenge
    answered is not accepted.
 8. One ledger line per checkpoint (time, per worker: last commit, state, what you did), and one line to the user only
    when something changed.
